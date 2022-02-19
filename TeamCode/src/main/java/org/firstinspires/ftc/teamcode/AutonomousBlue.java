@@ -94,153 +94,73 @@ public class AutonomousBlue extends LinearOpMode {
             robot.winchMotor.setPower(0.4);
             */
             //go forward to drop thing
-            setMotors(lf,lb,rf,rb,-pwr,-pwr,-pwr,-pwr);
+            RobotUtils.setMotors(lf,lb,rf,rb,-pwr,-pwr,-pwr,-pwr);
             // robot.basket.setPosition(0.55);
             sleep(f1);
-            stopMotors(lf,lb,rf,rb);
+            RobotUtils.stopMotors(lf,lb,rf,rb);
 
             //lift and drop
 
             synchronized(lock) {
                 robot.winchMotor.setPower(0.4);
-                moveLiftUp(lift, robot.basket, robot.winchMotor);
+                RobotUtils.moveLiftUp(lift, robot.basket, robot.winchMotor);
                 lift = LiftLevel.upLevel(lift); // to carry
                 // sleep(100);
-                moveLiftUp(lift, robot.basket, robot.winchMotor);
+                RobotUtils.moveLiftUp(lift, robot.basket, robot.winchMotor);
                 lift = LiftLevel.upLevel(lift); // to drop 3
                 sleep(600);
                 robot.basket.setPosition(0);
                 sleep(1200);
                 // robot.basket.setPosition(0.55);
                 // lift = LiftLevel.downLevel(lift);
-                moveLiftDown(lift, robot.basket, robot.winchMotor);
+                RobotUtils.moveLiftDown(lift, robot.basket, robot.winchMotor);
                 sleep (900);
                 //shake to lower
                 double tmp = 0.5;
-                setMotors(lf,lb,rf,rb,tmp,tmp,tmp,tmp);
+                RobotUtils.setMotors(lf,lb,rf,rb,tmp,tmp,tmp,tmp);
                 sleep(260);
-                stopMotors(lf,lb,rf,rb);
-                setMotors(lf,lb,rf,rb,-tmp,-tmp,-tmp,-tmp);
+                RobotUtils.stopMotors(lf,lb,rf,rb);
+                RobotUtils.setMotors(lf,lb,rf,rb,-tmp,-tmp,-tmp,-tmp);
                 sleep(260);
-                stopMotors(lf,lb,rf,rb);
+                RobotUtils.stopMotors(lf,lb,rf,rb);
                 //end shake
                 sleep(3000);
-                moveLiftDown(lift, robot.basket, robot.winchMotor);
+                RobotUtils.moveLiftDown(lift, robot.basket, robot.winchMotor);
                 lift = LiftLevel.downLevel(lift);
                 sleep(2000);
-                moveLiftDown(lift, robot.basket, robot.winchMotor);
+                RobotUtils.moveLiftDown(lift, robot.basket, robot.winchMotor);
                 lift = LiftLevel.downLevel(lift);
                 sleep(3000);
             }
 
             //go back to start position
-            setMotors(lf,lb,rf,rb,pwr,pwr,pwr,pwr);
+            RobotUtils.setMotors(lf,lb,rf,rb,pwr,pwr,pwr,pwr);
             sleep(f1);
-            stopMotors(lf,lb,rf,rb);
+            RobotUtils.stopMotors(lf,lb,rf,rb);
             return;
             /*
             //rotate 1pi radians
-            setMotors(lf,lb,rf,rb,pwr,pwr,-pwr,-pwr); //spin around 1pi radians
+            RobotUtils.setMotors(lf,lb,rf,rb,pwr,pwr,-pwr,-pwr); //spin around 1pi radians
             sleep(rotTime);
-            stopMotors(lf,lb,rf,rb);
+            RobotUtils.stopMotors(lf,lb,rf,rb);
             sleep(100);
 
             //go to duckies
-            setMotors(lf,lb,rf,rb,-pwr,-pwr,-pwr,-pwr);
+            RobotUtils.setMotors(lf,lb,rf,rb,-pwr,-pwr,-pwr,-pwr);
             sleep(s1);
-            stopMotors(lf,lb,rf, rb);
+            RobotUtils.stopMotors(lf,lb,rf, rb);
             //spin abductor
             robot.abductor.setPosition(1);
             sleep(duckyTime);
             robot.abductor.setPosition(0.5); //stop abductor
-            stopMotors(lf,lb,rf,rb);
+            RobotUtils.stopMotors(lf,lb,rf,rb);
             //go to storage thing
-            setMotors(lf,lb,rf,rb,pwr,-pwr,-pwr,pwr);
+            RobotUtils.setMotors(lf,lb,rf,rb,pwr,-pwr,-pwr,pwr);
             sleep(f2);
-            stopMotors(lf,lb,rf,rb);
+            RobotUtils.stopMotors(lf,lb,rf,rb);
             return;
             */
         }
 
     }
-    void setMotors(DcMotor leftF, DcMotor leftB, DcMotor rightF, DcMotor rightB,
-                   double m1,     double m2,     double m3,      double m4) {
-        leftF .setPower(m1);
-        leftB .setPower(m2);
-        rightF.setPower(m3);
-        rightB.setPower(m4);
-    }
-    void stopMotors(DcMotor leftF,  DcMotor leftB,
-                    DcMotor rightF, DcMotor rightB) {
-        leftF .setPower(0);
-        leftB .setPower(0);
-        rightF.setPower(0);
-        rightB.setPower(0);
-    }
-    synchronized void moveLiftDown(LiftLevel level, Servo servo, DcMotor motor) {
-        // double servPos = LiftLevel.level2Val(level);
-        //get the values we need to go to from the current level
-        LiftLevel downPos = LiftLevel.downLevel(level);
-
-        double toPosS = LiftLevel.level2Servo(downPos);
-        int toPosM    = (int)LiftLevel.level2Motor(downPos);
-
-        double motorPos = motor.getCurrentPosition();
-        //getCurrentPosition() gives a value in encoder ticks.
-        //there are 537.7 encoder ticks per revolution
-
-        switch (level) { //PICKUP, CARRY, DROP_1, DROP_3
-            case PICKUP:
-                break;
-            case CARRY:
-                motor.setTargetPosition(toPosM-10);
-                sleep(100);
-                servo.setPosition(toPosS);
-
-                break;
-            case DROP_1:
-                servo.setPosition(toPosS);
-                motor.setTargetPosition(toPosM); //1.75 * 537.7
-
-                break;
-            case DROP_3:
-                servo.setPosition(toPosS);
-                motor.setTargetPosition(toPosM);
-
-                break;
-        }
-    }
-
-    synchronized void moveLiftUp(LiftLevel level, Servo servo, DcMotor motor) {
-        // double servPos = LiftLevel.level2Val(level);
-        //get the values we need to go to from the current level
-        LiftLevel downPos = LiftLevel.upLevel(level);
-
-        double toPosS = LiftLevel.level2Servo(downPos);
-        int toPosM    = (int)LiftLevel.level2Motor(downPos);
-
-        double motorPos = motor.getCurrentPosition();
-        //getCurrentPosition() gives a value in encoder ticks.
-        //there are 537.7 encoder ticks per revolution
-        switch (level) { //PICKUP, CARRY, DROP_1, DROP_3
-            case PICKUP:
-                servo.setPosition(toPosS);
-                motor.setTargetPosition(toPosM);
-                break;
-            case CARRY:
-                motor.setTargetPosition(toPosM);
-                servo.setPosition(toPosS);
-                break;
-            case DROP_1:
-                motor.setTargetPosition(toPosM); //1.75 * 537.7
-                servo.setPosition(toPosS);
-                break;
-            case DROP_3:
-                motor.setTargetPosition(toPosM);
-                servo.setPosition(toPosS);
-                break;
-        }
-        while(motor.isBusy()) {}
-    }
-
 }

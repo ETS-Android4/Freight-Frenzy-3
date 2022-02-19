@@ -101,6 +101,7 @@ public class MainTeleOp extends LinearOpMode {
             double angle_rad = angles.firstAngle * -Math.PI/180.0;
             boolean liftMoving = false;
             liftMoving = robot.winchMotor.isBusy();
+            RobotUtils ru = new RobotUtils();
 
             // transposes coordinates based on gyro for FIELD ORIENTED DRIVING
             double temp = straif;
@@ -132,7 +133,7 @@ public class MainTeleOp extends LinearOpMode {
             //move lift up
             if (gamepad1.a && !liftMoving) {
 
-                moveLiftUp(lift, robot.basket, robot.winchMotor);
+                RobotUtils.moveLiftUp(lift, robot.basket, robot.winchMotor);
                 lift = LiftLevel.upLevel(lift);
 
                 telemetry.addData("lift level is "+ lift.toString(), "");
@@ -143,7 +144,7 @@ public class MainTeleOp extends LinearOpMode {
             //move lift down
             else if (gamepad1.b && !liftMoving) {
 
-                moveLiftDown(lift, robot.basket, robot.winchMotor);
+                RobotUtils.moveLiftDown(lift, robot.basket, robot.winchMotor);
                 lift = LiftLevel.downLevel(lift);
 
                 telemetry.addData("lift level is "+ lift.toString(), "");
@@ -177,16 +178,16 @@ public class MainTeleOp extends LinearOpMode {
             }
             else if (gamepad1.dpad_down) {
                 // robot.winchMotor.setPower(0.7);
-                moveLiftUp(lift, robot.basket, robot.winchMotor);
+                RobotUtils.moveLiftUp(lift, robot.basket, robot.winchMotor);
                 lift = LiftLevel.DROP_1;
                 // robot.winchMotor.setPower(0.4);
             }
             else if (gamepad1.dpad_up) {
                 // robot.winchMotor.setPower(0.5);
                 if(lift == LiftLevel.DROP_3)
-                    moveLiftDown(lift, robot.basket, robot.winchMotor);
+                    RobotUtils.moveLiftDown(lift, robot.basket, robot.winchMotor);
                 else
-                    moveLiftUp(LiftLevel.DROP_1, robot.basket, robot.winchMotor);
+                    RobotUtils.moveLiftUp(LiftLevel.DROP_1, robot.basket, robot.winchMotor);
                 lift = LiftLevel.DROP_3;
                 // robot.winchMotor.setPower(0.4);
             }
@@ -196,72 +197,6 @@ public class MainTeleOp extends LinearOpMode {
                 robot.abductor.setPosition(0.5);
             }
 
-        }
-    }
-
-    synchronized void moveLiftDown(LiftLevel level, Servo servo, DcMotor motor) {
-        // double servPos = LiftLevel.level2Val(level);
-        //get the values we need to go to from the current level
-        LiftLevel downPos = LiftLevel.downLevel(level);
-
-        double toPosS = LiftLevel.level2Servo(downPos);
-        int toPosM    = (int)LiftLevel.level2Motor(downPos);
-
-        double motorPos = motor.getCurrentPosition();
-        //getCurrentPosition() gives a value in encoder ticks.
-        //there are 537.7 encoder ticks per revolution
-
-        switch (level) { //PICKUP, CARRY, DROP_1, DROP_3
-            case PICKUP:
-                break;
-            case CARRY:
-                motor.setTargetPosition(toPosM);
-                sleep(100);
-                servo.setPosition(toPosS);
-
-                break;
-            case DROP_1:
-                servo.setPosition(toPosS);
-                motor.setTargetPosition(toPosM); //1.75 * 537.7
-
-                break;
-            case DROP_3:
-                servo.setPosition(toPosS);
-                motor.setTargetPosition(toPosM);
-
-                break;
-        }
-        //     int rotTarget = robot.winchMotor.getCurrentPosition() + (int)(3.75);
-    }
-
-    synchronized void moveLiftUp(LiftLevel level, Servo servo, DcMotor motor) {
-        // double servPos = LiftLevel.level2Val(level);
-        //get the values we need to go to from the current level
-        LiftLevel downPos = LiftLevel.upLevel(level);
-
-        double toPosS = LiftLevel.level2Servo(downPos);
-        int toPosM    = (int)LiftLevel.level2Motor(downPos);
-
-        double motorPos = motor.getCurrentPosition();
-        //getCurrentPosition() gives a value in encoder ticks.
-        //there are 537.7 encoder ticks per revolution
-        switch (level) { //PICKUP, CARRY, DROP_1, DROP_3
-            case PICKUP:
-                servo.setPosition(toPosS);
-                motor.setTargetPosition(toPosM);
-                break;
-            case CARRY:
-                motor.setTargetPosition(toPosM);
-                servo.setPosition(toPosS);
-                break;
-            case DROP_1:
-                motor.setTargetPosition(toPosM); //1.75 * 537.7
-                servo.setPosition(toPosS);
-                break;
-            case DROP_3:
-                motor.setTargetPosition(toPosM);
-                servo.setPosition(toPosS);
-                break;
         }
     }
 }
