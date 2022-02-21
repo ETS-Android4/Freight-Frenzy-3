@@ -27,7 +27,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class RobotUtils {
-
+    //TODO: ADD JAVADOC COMMENTS
     synchronized static void moveLiftDown(LiftLevel level, Servo servo, DcMotor motor) {
         // double servPos = LiftLevel.level2Val(level);
         //get the values we need to go to from the current level

@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+
 /**
  * This is NOT an opmode.
  *
@@ -13,13 +15,16 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class BotConfig
 {
     /* Public OpMode members. */
-    public DcMotor  leftFront      = null;
-    public DcMotor  leftBack       = null;
-    public DcMotor  rightFront     = null;
-    public DcMotor  rightBack      = null;
-    public DcMotor  winchMotor     = null;
-    public Servo    abductor     = null; //continuous rotation
-    public Servo    basket       = null;
+    public DcMotor    leftFront  = null;
+    public DcMotor    leftBack   = null;
+    public DcMotor    rightFront = null;
+    public DcMotor    rightBack  = null;
+    public DcMotor    winchMotor = null;
+    public Servo      abductor   = null; //continuous rotation
+    public Servo      basket     = null;
+    public WebcamName camera     = null;
+    public int cameraMonitor;
+    public String cameraName = null;
 
 
     /* local OpMode members. */
@@ -70,6 +75,18 @@ public class BotConfig
         abductor = hwMap.get(Servo.class, "abductor");
         basket   = hwMap.get(Servo.class, "basket");
 
+        // Define and initialize camera.
+        cameraName = "webcam";
+        camera = hwMap.get(WebcamName.class, cameraName);
+        // Define and initialize camera monitor.
+        // TODO: Ensure this works
+        cameraMonitor = hwMap
+                .appContext
+                .getResources()
+                .getIdentifier("cameraMintorViewId", "id", hwMap.appContext.getPackageName());
+
+
+        //set abductor defaults
         abductor.setPosition(0.5); //0.5 is stop for a continuous rotation servo
         // basket.setPosition(0.81);
     }
