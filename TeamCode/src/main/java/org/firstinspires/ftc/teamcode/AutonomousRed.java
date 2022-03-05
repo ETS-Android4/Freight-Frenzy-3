@@ -111,7 +111,7 @@ public class AutonomousRed extends LinearOpMode {
                 robot.basket.setPosition(0);
                 sleep(300);
                 robot.basket.setPosition(0.55);
-            } */
+            }
             //go back to start position
             setMotors(lf,lb,rf,rb,pwr,pwr,pwr,pwr);
             sleep(f1);
@@ -128,7 +128,7 @@ public class AutonomousRed extends LinearOpMode {
             sleep(s1);
             stopMotors(lf,lb,rf, rb);
             //spin abductor
-            robot.abductor.setPosition(0);
+            robot.abductor.setPosition(0); //TODO FIX
             sleep(duckyTime);
             robot.abductor.setPosition(0.5); //stop abductor
             stopMotors(lf,lb,rf,rb);
@@ -136,6 +136,9 @@ public class AutonomousRed extends LinearOpMode {
             setMotors(lf,lb,rf,rb,pwr,pwr,pwr,pwr);
             sleep(f2);
             stopMotors(lf,lb,rf,rb);
+            return;
+
+             */
             return;
         }
 

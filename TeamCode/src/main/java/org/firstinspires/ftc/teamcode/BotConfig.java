@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -20,7 +21,7 @@ public class BotConfig
     public DcMotor    rightFront = null;
     public DcMotor    rightBack  = null;
     public DcMotor    winchMotor = null;
-    public Servo      abductor   = null; //continuous rotation
+    public DcMotor    abductor   = null;
     public Servo      basket     = null;
     public WebcamName camera     = null;
     public int cameraMonitor;
@@ -47,12 +48,14 @@ public class BotConfig
         rightFront = hwMap.get(DcMotor.class, "FrontRight");
         rightBack  = hwMap.get(DcMotor.class, "BackRight");
         winchMotor = hwMap.get(DcMotor.class, "WinchMotor");
+        abductor   = hwMap.get(DcMotor.class, "abductor");
 
         leftFront.setDirection (DcMotor.Direction.FORWARD);
         leftBack.setDirection  (DcMotor.Direction.FORWARD);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection (DcMotor.Direction.REVERSE);
         winchMotor.setDirection(DcMotor.Direction.FORWARD);
+        abductor.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to zero power
         leftFront.setPower(0);
@@ -60,21 +63,25 @@ public class BotConfig
         rightFront.setPower(0);
         rightBack.setPower(0);
         winchMotor.setPower(0);
+        abductor.setPower(0);
 
         // Set all motors to run without encoders.
         leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        abductor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         winchMotor.setTargetPosition(0);
         winchMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         winchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         winchMotor.setPower(0.2);
         // Define and initialize ALL installed servos.
-        abductor = hwMap.get(Servo.class, "abductor");
+//        abductor = hwMap.get(Servo.class, "abductor");
         basket   = hwMap.get(Servo.class, "basket");
 
+        // *********************************** CAMERA STUFF *************************************
+        /*
         // Define and initialize camera.
         cameraName = "webcam";
         camera = hwMap.get(WebcamName.class, cameraName);
@@ -85,9 +92,9 @@ public class BotConfig
                 .getResources()
                 .getIdentifier("cameraMintorViewId", "id", hwMap.appContext.getPackageName());
 
-
+        */
         //set abductor defaults
-        abductor.setPosition(0.5); //0.5 is stop for a continuous rotation servo
+//        abductor.setPosition(0.5); //0.5 is stop for a continuous rotation servo
         // basket.setPosition(0.81);
     }
 }
