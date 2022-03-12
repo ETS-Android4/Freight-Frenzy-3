@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -28,6 +28,8 @@ public class BotConfig
     public int cameraMonitor;
     public String cameraName = null;
     public RevColorSensorV3 cSensor = null; // basket color sensor
+    public BNO055IMU BNimu         = null;
+    public IMU imu;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -50,6 +52,9 @@ public class BotConfig
         rightBack  = hwMap.get(DcMotor.class, "BackRight");
         winchMotor = hwMap.get(DcMotor.class, "WinchMotor");
         abductor   = hwMap.get(DcMotor.class, "abductor");
+        BNimu        = hwMap.get(BNO055IMU.class, "imu");
+
+        imu = new IMU(BNimu);
 
         leftFront.setDirection (DcMotor.Direction.FORWARD);
         leftBack.setDirection  (DcMotor.Direction.FORWARD);
