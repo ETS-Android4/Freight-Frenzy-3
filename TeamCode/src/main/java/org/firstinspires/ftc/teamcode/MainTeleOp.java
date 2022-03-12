@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.sun.tools.javac.tree.DCTree;
+
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -85,6 +87,8 @@ public class MainTeleOp extends LinearOpMode {
         robot.basket.setPosition(0.81);
         boolean blockHeld = false;
         boolean OVERRIDE = true;
+        final LiftLevel[] liftArr = new LiftLevel[1];
+        liftArr[0] = lift;
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
@@ -129,19 +133,28 @@ public class MainTeleOp extends LinearOpMode {
             telemetry.addData("Sensor: ", RobotUtils.showNormalizedRGBA(robot.cSensor.getNormalizedColors()));
             telemetry.update();
 
+            lift = liftArr[0];
+
             if(isDetected) {
                 telemetry.addData("Is detected?", "true");
                 telemetry.update();
+                if (lift.equals(LiftLevel.PICKUP)) {
+                    RobotUtils.moveLiftUp(lift, robot.basket, robot.winchMotor);
+                    lift = LiftLevel.upLevel(lift);
+                    liftArr[0] = lift;
+                }
                 blockHeld = true;
             }
-            if(blockHeld) {
-                //TODO: LED LIGHTS ACTIVATE HERE
-            }
+//            if(blockHeld) {
+//                robot.abductor.setPower(1);
+//                //TODO: LED LIGHTS ACTIVATE HERE
+//            }
             //move lift up
             if (gamepad1.a && !liftMoving) {
 
-                RobotUtils.moveLiftUp(lift, robot.basket, robot.winchMotor);
+                RobotUtils.moveLiftUp(liftArr[0], robot.basket, robot.winchMotor);
                 lift = LiftLevel.upLevel(lift);
+                liftArr[0] = lift;
 
                 telemetry.addData("lift level is "+ lift.toString(), "");
                 telemetry.addData("target pos is "+ robot.winchMotor.getTargetPosition(), "");
@@ -151,8 +164,9 @@ public class MainTeleOp extends LinearOpMode {
             //move lift down
             else if (gamepad1.b && !liftMoving) {
 
-                RobotUtils.moveLiftDown(lift, robot.basket, robot.winchMotor);
+                RobotUtils.moveLiftDown(liftArr[0], robot.basket, robot.winchMotor);
                 lift = LiftLevel.downLevel(lift);
+                liftArr[0] = lift;
 
                 telemetry.addData("lift level is "+ lift.toString(), "");
                 telemetry.addData("target pos is "+ robot.winchMotor.getTargetPosition(), "");
@@ -182,23 +196,31 @@ public class MainTeleOp extends LinearOpMode {
             //drop
             else if (gamepad1.x && (lift == LiftLevel.DROP_1 || lift==LiftLevel.DROP_3)) {
                 robot.basket.setPosition(0);
+                final LiftLevel tempLift = lift;
+                new Thread( () -> {
+                    sleep(1000);
+                    if (tempLift.equals(LiftLevel.DROP_3) || tempLift.equals(LiftLevel.DROP_1)) {
+                        RobotUtils.moveLiftDown(tempLift, robot.basket, robot.winchMotor);
+                        liftArr[0] = LiftLevel.downLevel(tempLift);
+                    }
+                }).start();
                 blockHeld = false;
             }
-            else if (gamepad1.dpad_down) {
-                // robot.winchMotor.setPower(0.7);
-                RobotUtils.moveLiftUp(lift, robot.basket, robot.winchMotor);
-                lift = LiftLevel.DROP_1;
-                // robot.winchMotor.setPower(0.4);
-            }
-            else if (gamepad1.dpad_up) {
-                // robot.winchMotor.setPower(0.5);
-                if(lift == LiftLevel.DROP_3)
-                    RobotUtils.moveLiftDown(lift, robot.basket, robot.winchMotor);
-                else
-                    RobotUtils.moveLiftUp(LiftLevel.DROP_1, robot.basket, robot.winchMotor);
-                lift = LiftLevel.DROP_3;
-                // robot.winchMotor.setPower(0.4);
-            }
+//            else if (gamepad1.dpad_down) {
+//                // robot.winchMotor.setPower(0.7);
+//                RobotUtils.moveLiftUp(lift, robot.basket, robot.winchMotor);
+//                lift = LiftLevel.DROP_1;
+//                // robot.winchMotor.setPower(0.4);
+//            }
+//            else if (gamepad1.dpad_up) {
+//                // robot.winchMotor.setPower(0.5);
+//                if(lift == LiftLevel.DROP_3)
+//                    RobotUtils.moveLiftDown(lift, robot.basket, robot.winchMotor);
+//                else
+//                    RobotUtils.moveLiftUp(LiftLevel.DROP_1, robot.basket, robot.winchMotor);
+//                lift = LiftLevel.DROP_3;
+//                // robot.winchMotor.setPower(0.4);
+//            }
 
             //stop the abductor
             if(!gamepad1.right_bumper && !gamepad1.left_bumper) {
