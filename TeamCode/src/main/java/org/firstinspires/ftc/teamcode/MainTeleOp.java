@@ -45,15 +45,8 @@ public class MainTeleOp extends LinearOpMode {
         double forward;
         double turnLeft;
         double turnRight;
-        LiftLevel lift = LiftLevel.PICKUP; // 0=bottom, 1 = lift and raise to lowest possible pos
-        // 2=raise to 1st level pos
-        // null=raise to 2nd level pos
-        // 3=raise to 3rd level pos (fully extended)
-        // double rakeHeightV;
-        // // double bounce = 0.0;
-        // boolean rampRunning = false;
-        // boolean armExtend = false;
-        // boolean armGrip = false;
+        LiftLevel lift = LiftLevel.PICKUP;
+
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
@@ -90,6 +83,8 @@ public class MainTeleOp extends LinearOpMode {
 
 
         robot.basket.setPosition(0.81);
+        boolean blockHeld = false;
+        boolean OVERRIDE = true;
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
@@ -100,6 +95,7 @@ public class MainTeleOp extends LinearOpMode {
             double turn = -turnLeft + turnRight;
             double angle_rad = angles.firstAngle * -Math.PI/180.0;
             boolean liftMoving = false;
+            boolean isDetected = RobotUtils.checkCSensor(robot.cSensor);
             liftMoving = robot.winchMotor.isBusy();
 //            RobotUtils ru = new RobotUtils();
 
@@ -129,7 +125,18 @@ public class MainTeleOp extends LinearOpMode {
             robot.rightFront.setPower(m3D);
             robot.winchMotor.setPower(0.4);
 
+            //check and enable LED if something is detected in light sensor
+            telemetry.addData("Sensor: ", RobotUtils.showNormalizedRGBA(robot.cSensor.getNormalizedColors()));
+            telemetry.update();
 
+            if(isDetected) {
+                telemetry.addData("Is detected?", "true");
+                telemetry.update();
+                blockHeld = true;
+            }
+            if(blockHeld) {
+                //TODO: LED LIGHTS ACTIVATE HERE
+            }
             //move lift up
             if (gamepad1.a && !liftMoving) {
 
@@ -175,6 +182,7 @@ public class MainTeleOp extends LinearOpMode {
             //drop
             else if (gamepad1.x && (lift == LiftLevel.DROP_1 || lift==LiftLevel.DROP_3)) {
                 robot.basket.setPosition(0);
+                blockHeld = false;
             }
             else if (gamepad1.dpad_down) {
                 // robot.winchMotor.setPower(0.7);
@@ -197,6 +205,25 @@ public class MainTeleOp extends LinearOpMode {
                 robot.abductor.setPower(0);
             }
 
+            //MANUAL OVERRIDES
+            //MANUAL OVERRIDES
+//            if(gamepad2.dpad_down && OVERRIDE) {
+//                robot.winchMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                robot.winchMotor.setPower(-0.3);
+////                robot.winchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            }
+//            else if(gamepad2.dpad_up && OVERRIDE) {
+//                robot.winchMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                robot.winchMotor.setPower(0.3);
+//            }
+//            else if(OVERRIDE && !gamepad2.dpad_down && !gamepad2.dpad_up) {
+//                robot.winchMotor.setPower(0);
+//            }
+//            if(gamepad2.x) {
+//                robot.winchMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//                robot.winchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                OVERRIDE = false;
+//            }
         }
     }
 }
@@ -210,74 +237,3 @@ public class MainTeleOp extends LinearOpMode {
 
 
 
-
-
-
-
-
-
-// activate arm
-// if (gamepad1.a && armExtend && bounce < runtime.milliseconds()-500) {
-//     // robot.armExtender.setPosition(0.4);
-//     armExtend = false;
-//     bounce = runtime.milliseconds();
-// }
-// else if (gamepad1.a && bounce < runtime.milliseconds()-500) {
-//     // robot.armExtender.setPosition(0.7);
-//     armExtend = true;
-//     bounce = runtime.milliseconds();
-// }
-// else if (gamepad1.y && bounce < runtime.milliseconds()-500) {
-//     // robot.armExtender.setPosition(0.6);
-//     // robot.wobbleGrip.setPosition(0.5);
-//     bounce = runtime.milliseconds();
-// }
-
-// activate gripper
-// if (gamepad1.b && armExtend && armGrip && bounce < runtime.milliseconds()-500) {
-//     // robot.wobbleGrip.setPosition(0.5);
-//     armGrip = false;
-//     bounce = runtime.milliseconds();
-// }
-// else if (gamepad1.b && armExtend && bounce < runtime.milliseconds()-500) {
-//     // robot.wobbleGrip.setPosition(0.8);
-//     armGrip = true;
-//     bounce = runtime.milliseconds();
-// }
-
-// change ramp height
-// rakeHeightV = gamepad1.right_stick_y;
-// robot.rake.setPower(rakeHeightV);
-
-// turn rake on / off
-// if (rampRunning) {
-//     // robot.ringIntake.setPosition(0.0);
-// }
-// else if (rakeHeightV != 0) {
-//     robot.ringIntake.setPosition(0.5);
-// }
-// else {
-//     // robot.ringIntake.setPosition(0.5);
-// }
-
-
-// if (rampRunning && gamepad1.x && bounce < runtime.milliseconds()-500) {
-//     rampRunning = false;
-//     bounce = runtime.milliseconds();
-// }
-// else if (!rampRunning && gamepad1.x && bounce < runtime.milliseconds()-500) {
-//     rampRunning = true;
-//     bounce = runtime.milliseconds();
-// }
-
-
-// // adjust ramp angle
-// if (gamepad1.dpad_up) {
-//     // robot.ringAngle.setPower(0.35);
-// }
-// else if (gamepad1.dpad_down) {
-//     // robot.ringAngle.setPower(-0.1);
-// }
-// else {
-//     // robot.ringAngle.setPower(0.2);
-// }

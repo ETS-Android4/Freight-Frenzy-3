@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -26,7 +27,7 @@ public class BotConfig
     public WebcamName camera     = null;
     public int cameraMonitor;
     public String cameraName = null;
-
+    public RevColorSensorV3 cSensor = null; // basket color sensor
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -77,8 +78,12 @@ public class BotConfig
         winchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         winchMotor.setPower(0.2);
         // Define and initialize ALL installed servos.
-//        abductor = hwMap.get(Servo.class, "abductor");
         basket   = hwMap.get(Servo.class, "basket");
+
+        // Define and initialize color sensor
+        cSensor = hwMap.get(RevColorSensorV3.class, "cSensor");
+        cSensor.initialize();
+        cSensor.enableLed(true);
 
         // *********************************** CAMERA STUFF *************************************
         /*

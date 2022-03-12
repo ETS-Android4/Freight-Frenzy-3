@@ -13,8 +13,9 @@ public enum LiftLevel {
             case DROP_1: case DROP_3:
                 return 0.3; //we dont want this to drop until the player
             //gives the drop command
+            default:
+                return 0.3;
         }
-        return 0/0;
     }
 
     public static double level2Motor(LiftLevel level) {
@@ -27,8 +28,9 @@ public enum LiftLevel {
                 return 2688.5;//940.975; //1.75*537.7
             case DROP_3:
                 return 2688.5;
+            default: // this will never run, but exists because Javac is garbage at pattern matching
+                return 403.275;
         }
-        return 0/0;
     }
 
     public static LiftLevel downLevel(LiftLevel level) {

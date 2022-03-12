@@ -3,8 +3,11 @@ package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Thread.sleep;
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import java.util.logging.Level;
+
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 import java.util.Locale;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -99,5 +102,15 @@ public class RobotUtils {
         rightF.setPower(0);
         rightB.setPower(0);
     }
-
+    static Boolean checkCSensor(RevColorSensorV3 sensor) {
+        NormalizedRGBA colors = sensor.getNormalizedColors();
+        return colors.red > 0.004 && colors.green > 0.005;
+    }
+    static String showNormalizedRGBA(NormalizedRGBA colors) {
+        String str = "";
+        str += "red: "+colors.red + " ";
+        str += "green: "+colors.green + " ";
+        str += "blue: "+colors.blue + " ";
+        return str;
+    }
 }
