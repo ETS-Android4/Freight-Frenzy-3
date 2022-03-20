@@ -101,43 +101,46 @@ public class AutonomousBlue extends LinearOpMode {
 
             //lift and drop
 
+            final LiftLevel[] liftArr = new LiftLevel[1];
+            liftArr[0] = lift;
+
             synchronized(lock) {
                 robot.winchMotor.setPower(0.4);
-                RobotUtils.moveLiftUp(lift, robot.basket, robot.winchMotor);
+                RobotUtils.moveLiftUp(liftArr[0], robot.basket, robot.winchMotor);
                 lift = LiftLevel.upLevel(lift); // to carry
+                liftArr[0] = lift;
                 // sleep(100);
                 RobotUtils.moveLiftUp(lift, robot.basket, robot.winchMotor);
                 lift = LiftLevel.upLevel(lift); // to drop 3
-                sleep(600);
+                liftArr[0] = lift;
+                sleep(3000);
+                //drop object
                 robot.basket.setPosition(0);
+                final LiftLevel tempLift = lift;
+                new Thread( () -> {
+                    sleep(1000);
+                    if (tempLift.equals(LiftLevel.DROP_3) || tempLift.equals(LiftLevel.DROP_1)) {
+                        RobotUtils.moveLiftDown(tempLift, robot.basket, robot.winchMotor);
+                        liftArr[0] = LiftLevel.downLevel(tempLift);
+                    }
+                }).start();
                 sleep(1200);
-                // robot.basket.setPosition(0.55);
-                // lift = LiftLevel.downLevel(lift);
-                RobotUtils.moveLiftDown(lift, robot.basket, robot.winchMotor);
-                sleep (900);
-                //shake to lower
-                double tmp = 0.5;
-                RobotUtils.setMotors(lf,lb,rf,rb,tmp,tmp,tmp,tmp);
-                sleep(260);
-                RobotUtils.stopMotors(lf,lb,rf,rb);
-                RobotUtils.setMotors(lf,lb,rf,rb,-tmp,-tmp,-tmp,-tmp);
-                sleep(260);
-                RobotUtils.stopMotors(lf,lb,rf,rb);
-                //end shake
-                sleep(3000);
-                RobotUtils.moveLiftDown(lift, robot.basket, robot.winchMotor);
-                lift = LiftLevel.downLevel(lift);
-                sleep(2000);
-                RobotUtils.moveLiftDown(lift, robot.basket, robot.winchMotor);
-                lift = LiftLevel.downLevel(lift);
-                sleep(3000);
+                //END DROP
+//                RobotUtils.moveLiftDown(lift, robot.basket, robot.winchMotor);
+//                lift = LiftLevel.downLevel(lift);
+//                sleep(2000);
+//                RobotUtils.moveLiftDown(lift, robot.basket, robot.winchMotor);
+//                lift = LiftLevel.downLevel(lift);
+//                sleep(3000);
             }
 
             //go back to start position
             RobotUtils.setMotors(lf,lb,rf,rb,pwr,pwr,pwr,pwr);
             sleep(f1);
             RobotUtils.stopMotors(lf,lb,rf,rb);
+            sleep(5000);
             return;
+            //TODO: MAKE IT DROP TO A LOWER LEVEL WHEN DONE WITH AUTONOMOUS SO IT WORKS WITH MAINTELEOP
             /*
             //rotate 1pi radians
             RobotUtils.setMotors(lf,lb,rf,rb,pwr,pwr,-pwr,-pwr); //spin around 1pi radians
