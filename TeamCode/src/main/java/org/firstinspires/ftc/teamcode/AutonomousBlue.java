@@ -138,7 +138,18 @@ public class AutonomousBlue extends LinearOpMode {
             RobotUtils.setMotors(lf,lb,rf,rb,pwr,pwr,pwr,pwr);
             sleep(f1);
             RobotUtils.stopMotors(lf,lb,rf,rb);
-            sleep(5000);
+            sleep(2500);
+            RobotUtils.rotateT(robot, 90);
+            sleep(1500);
+            RobotUtils.setMotors(lf,lb,rf,rb,-pwr,-pwr,-pwr,-pwr);
+            //go to duckies
+            sleep(1200);
+            RobotUtils.stopMotors(lf,lb,rf,rb);
+            RobotUtils.rotateT(robot, 20);
+            sleep(500);
+            RobotUtils.setMotors(lf,lb,rf,rb,-pwr,-pwr,-pwr,-pwr);
+            sleep(500);
+            RobotUtils.stopMotors(lf,lb,rf,rb);
             return;
             //TODO: MAKE IT DROP TO A LOWER LEVEL WHEN DONE WITH AUTONOMOUS SO IT WORKS WITH MAINTELEOP
             /*

@@ -84,7 +84,7 @@ public class MainTeleOp extends LinearOpMode {
         telemetry.update();
 
 
-        robot.basket.setPosition(0.81);
+        robot.basket.setPosition(0.82);
         boolean blockHeld = false;
         boolean OVERRIDE = true;
         final LiftLevel[] liftArr = new LiftLevel[1];
@@ -128,7 +128,7 @@ public class MainTeleOp extends LinearOpMode {
             robot.rightBack.setPower(m4D);
             robot.leftBack.setPower(m2D);
             robot.rightFront.setPower(m3D);
-            robot.winchMotor.setPower(0.4);
+            robot.winchMotor.setPower(0.7);
 
             //check and enable LED if something is detected in light sensor
             telemetry.addData("Sensor: ", RobotUtils.showNormalizedRGBA(robot.cSensor.getNormalizedColors()));

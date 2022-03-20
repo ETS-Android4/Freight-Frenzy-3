@@ -7,7 +7,7 @@ public enum LiftLevel {
     public static double level2Servo(LiftLevel level) {
         switch (level) {
             case PICKUP:
-                return 0.81;
+                return 0.82; //0.81
             case CARRY:
                 return 0.55;
             case DROP_1: case DROP_3:

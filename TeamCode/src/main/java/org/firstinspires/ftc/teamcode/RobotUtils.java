@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -88,6 +89,44 @@ public class RobotUtils {
         }
     }
 
+    synchronized static void rotateT(BotConfig robot, float targetAngle) {
+        float absTarget;
+
+        absTarget = Math.round(robot.imu.getAngles()[0] + targetAngle);
+        if (targetAngle>0) {
+            targetAngle -= 10;
+            absTarget = Math.round(robot.imu.getAngles()[0] + targetAngle);
+
+            if (absTarget>360) {absTarget = 0+absTarget;}
+            while(Math.abs(Math.round(robot.imu.getAngles()[0])) < absTarget) {
+                robot.leftFront. setPower( 0.2);
+                robot.leftBack.  setPower( 0.2);
+                robot.rightFront.setPower(-0.2);
+                robot.rightBack. setPower(-0.2);
+            }
+            robot.leftFront .setPower(0);
+            robot.leftBack  .setPower(0);
+            robot.rightFront.setPower(0);
+            robot.rightBack .setPower(0);
+
+        }
+        else {
+            targetAngle += 10;
+            absTarget = Math.round(robot.imu.getAngles()[0] - targetAngle);
+            if(absTarget<0) {absTarget = 360 - absTarget;}
+            while(Math.abs(Math.round(robot.imu.getAngles()[0])) > absTarget) {
+                robot.leftFront. setPower(-0.2);
+                robot.leftBack.  setPower(-0.2);
+                robot.rightFront.setPower( 0.2);
+                robot.rightBack. setPower( 0.2);
+            }
+            robot.leftFront .setPower(0);
+            robot.leftBack  .setPower(0);
+            robot.rightFront.setPower(0);
+            robot.rightBack .setPower(0);
+        }
+    }
+
     static void setMotors(DcMotor leftF, DcMotor leftB, DcMotor rightF, DcMotor rightB,
                    double m1,     double m2,     double m3,      double m4) {
         leftF .setPower(m1);
@@ -113,4 +152,5 @@ public class RobotUtils {
         str += "blue: "+colors.blue + " ";
         return str;
     }
+
 }
