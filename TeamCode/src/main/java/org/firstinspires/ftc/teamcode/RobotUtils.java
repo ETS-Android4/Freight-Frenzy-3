@@ -5,8 +5,14 @@ import static java.lang.Thread.sleep;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.RunnableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 import java.util.Locale;
@@ -64,10 +70,10 @@ public class RobotUtils {
         catch (InterruptedException ignored){}
         //     int rotTarget = robot.winchMotor.getCurrentPosition() + (int)(3.75);
     }
-    synchronized static void moveLiftUp(LiftLevel level, Servo servo, DcMotor motor) {
+    synchronized static void moveLiftUp(LiftLevel level, Servo servo, DcMotor motor, Gamepad gamepad) {
         // double servPos = LiftLevel.level2Val(level);
         //get the values we need to go to from the current level
-        LiftLevel downPos = LiftLevel.upLevel(level);
+        LiftLevel downPos = LiftLevel.upLevel(level, gamepad);
 
         double toPosS = LiftLevel.level2Servo(downPos);
         int toPosM    = (int)LiftLevel.level2Motor(downPos);
@@ -89,6 +95,42 @@ public class RobotUtils {
         }
     }
 
+    //liftControlF returns a RunnableFuture, which contains a LiftLevel to determine the resulting
+    //level the lift ends up at. It will automatically move the lift to the correct level.
+//    public static RunnableFuture<LiftLevel> liftControlF
+//                (final BotConfig robot, final LiftLevel lift, final Gamepad gamepad) {
+//        return new RunnableFuture<LiftLevel>() {
+//            @Override
+//            public void run() {
+//                if(gamepad.dpad_up) {}
+//            }
+//
+//            @Override
+//            public boolean cancel(boolean b) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean isCancelled() {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean isDone() {
+//                return false;
+//            }
+//
+//            @Override
+//            public LiftLevel get() throws ExecutionException, InterruptedException {
+//                return null;
+//            }
+//
+//            @Override
+//            public LiftLevel get(long l, TimeUnit timeUnit) throws ExecutionException, InterruptedException, TimeoutException {
+//                return null;
+//            }
+//        }
+//    }
     synchronized static void rotateT(BotConfig robot, float targetAngle) {
         float absTarget;
 

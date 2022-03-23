@@ -194,7 +194,7 @@ public class AutonomousRed extends LinearOpMode {
     synchronized void moveLiftUp(LiftLevel level, Servo servo, DcMotor motor) {
         // double servPos = LiftLevel.level2Val(level);
         //get the values we need to go to from the current level
-        LiftLevel downPos = LiftLevel.upLevel(level);
+        LiftLevel downPos = LiftLevel.upLevel(level, gamepad1);
 
         double toPosS = LiftLevel.level2Servo(downPos);
         int toPosM    = (int)LiftLevel.level2Motor(downPos);

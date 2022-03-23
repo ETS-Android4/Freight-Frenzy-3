@@ -106,12 +106,12 @@ public class AutonomousBlue extends LinearOpMode {
 
             synchronized(lock) {
                 robot.winchMotor.setPower(0.4);
-                RobotUtils.moveLiftUp(liftArr[0], robot.basket, robot.winchMotor);
-                lift = LiftLevel.upLevel(lift); // to carry
+                RobotUtils.moveLiftUp(liftArr[0], robot.basket, robot.winchMotor, gamepad1);
+                lift = LiftLevel.upLevel(lift, gamepad1); // to carry
                 liftArr[0] = lift;
                 // sleep(100);
-                RobotUtils.moveLiftUp(lift, robot.basket, robot.winchMotor);
-                lift = LiftLevel.upLevel(lift); // to drop 3
+                RobotUtils.moveLiftUp(lift, robot.basket, robot.winchMotor, gamepad1);
+                lift = LiftLevel.upLevel(lift, gamepad1); // to drop 3
                 liftArr[0] = lift;
                 sleep(3000);
                 //drop object

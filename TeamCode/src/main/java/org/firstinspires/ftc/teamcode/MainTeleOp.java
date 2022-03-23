@@ -140,8 +140,8 @@ public class MainTeleOp extends LinearOpMode {
                 telemetry.addData("Is detected?", "true");
                 telemetry.update();
                 if (lift.equals(LiftLevel.PICKUP)) {
-                    RobotUtils.moveLiftUp(lift, robot.basket, robot.winchMotor);
-                    lift = LiftLevel.upLevel(lift);
+                    RobotUtils.moveLiftUp(lift, robot.basket, robot.winchMotor, gamepad1);
+                    lift = LiftLevel.upLevel(lift, gamepad1);
                     liftArr[0] = lift;
                 }
                 blockHeld = true;
@@ -151,11 +151,12 @@ public class MainTeleOp extends LinearOpMode {
 //                //TODO: LED LIGHTS ACTIVATE HERE
 //            }
             //move lift up
-            if (gamepad1.a && !liftMoving) {
+            if (gamepad1.a && !liftMoving && liftArr[0].equals(LiftLevel.PICKUP)) {
 
-                RobotUtils.moveLiftUp(liftArr[0], robot.basket, robot.winchMotor);
-                lift = LiftLevel.upLevel(lift);
+                RobotUtils.moveLiftUp(liftArr[0], robot.basket, robot.winchMotor, gamepad1);
+                lift = LiftLevel.upLevel(lift, gamepad1);
                 liftArr[0] = lift;
+                //TODO: replace lift = with the runnable.get, then set the array
 
                 telemetry.addData("lift level is "+ lift.toString(), "");
                 telemetry.addData("target pos is "+ robot.winchMotor.getTargetPosition(), "");
@@ -174,6 +175,18 @@ public class MainTeleOp extends LinearOpMode {
                 telemetry.update();
 
             }
+            else if ((gamepad1.dpad_up || gamepad1.dpad_down) && !liftMoving &&
+                    (liftArr[0].equals(LiftLevel.CARRY) || liftArr[0].equals(LiftLevel.DROP_1))) {
+
+                RobotUtils.moveLiftUp(liftArr[0], robot.basket, robot.winchMotor, gamepad1);
+                lift = LiftLevel.upLevel(lift, gamepad1);
+                liftArr[0] = lift;
+            }
+//            else if (gamepad1.dpad_down && !liftMoving && liftArr[0].equals(LiftLevel.CARRY)) {
+//                RobotUtils.moveLiftUp(liftArr[0], robot.basket, robot.winchMotor, gamepad1);
+//                lift = LiftLevel.upLevel(lift, gamepad1);
+//                liftArr[0] = lift;
+//            }
             //move abductor
             else if (gamepad1.right_bumper) {
                 robot.abductor.setPower(1);

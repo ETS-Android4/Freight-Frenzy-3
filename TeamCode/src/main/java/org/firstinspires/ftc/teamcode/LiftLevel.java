@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.qualcomm.robotcore.hardware.Gamepad;
+
+import java.util.concurrent.RunnableFuture;
+
 public enum LiftLevel {
     PICKUP, CARRY, DROP_1, DROP_3;
 
@@ -25,7 +29,7 @@ public enum LiftLevel {
             case CARRY:
                 return 403.275; //0.75*537.7
             case DROP_1:
-                return 2688.5;//940.975; //1.75*537.7
+                return 470.49;//940.975; //1.75*537.7
             case DROP_3:
                 return 2688.5;
             default: // this will never run, but exists because Javac is garbage at pattern matching
@@ -43,18 +47,25 @@ public enum LiftLevel {
         // throw IllegalArgumentException;
         return level;
     }
-    public static LiftLevel upLevel(LiftLevel level) {
+    public static LiftLevel upLevel(LiftLevel level, Gamepad gamepad) {
         switch (level) {
             case PICKUP:
                 return CARRY;
             case CARRY:
-                return DROP_1;
-            case DROP_1: case DROP_3:
+                if     (gamepad.dpad_up)   {return DROP_3;}
+                else if(gamepad.dpad_down) {return DROP_1;}
+                else {return level;}
+//                return DROP_1;
+            case DROP_1:
+                if (gamepad.dpad_down) {return DROP_1;}
+                else {return DROP_3;}
+            case DROP_3:
                 return DROP_3;
         }
         // throw IllegalArgumentException;
         return level;
     }
+
     public String toString() {
         switch (this) {
             case PICKUP:
