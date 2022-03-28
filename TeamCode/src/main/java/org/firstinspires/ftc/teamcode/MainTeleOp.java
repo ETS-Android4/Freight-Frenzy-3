@@ -189,10 +189,10 @@ public class MainTeleOp extends LinearOpMode {
 //            }
             //move abductor
             else if (gamepad1.right_bumper) {
-                robot.abductor.setPower(1);
+                robot.abductor.setPower(0.80);
             }
             else if (gamepad1.left_bumper) {
-                robot.abductor.setPower(-1);
+                robot.abductor.setPower(-0.80);
             }
             //turbo mode
             else if (gamepad1.y && lift == LiftLevel.CARRY) {

@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import java.util.logging.Level;
+
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import java.util.Locale;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -88,8 +90,10 @@ public class AutonomousBlue extends LinearOpMode {
         final int s1 = 3000;
         final int f2 = 1000;
 
-
+        Gamepad gamepad = new Gamepad();
+        gamepad.dpad_up = true;
         while (opModeIsActive()) {
+            sleep(15000);
             /*
             robot.winchMotor.setPower(0.4);
             */
@@ -106,12 +110,12 @@ public class AutonomousBlue extends LinearOpMode {
 
             synchronized(lock) {
                 robot.winchMotor.setPower(0.4);
-                RobotUtils.moveLiftUp(liftArr[0], robot.basket, robot.winchMotor, gamepad1);
-                lift = LiftLevel.upLevel(lift, gamepad1); // to carry
+                RobotUtils.moveLiftUp(liftArr[0], robot.basket, robot.winchMotor, gamepad);
+                lift = LiftLevel.upLevel(lift, gamepad); // to carry
                 liftArr[0] = lift;
                 // sleep(100);
-                RobotUtils.moveLiftUp(lift, robot.basket, robot.winchMotor, gamepad1);
-                lift = LiftLevel.upLevel(lift, gamepad1); // to drop 3
+                RobotUtils.moveLiftUp(lift, robot.basket, robot.winchMotor, gamepad);
+                lift = LiftLevel.upLevel(lift, gamepad); // to drop 3
                 liftArr[0] = lift;
                 sleep(3000);
                 //drop object
@@ -136,22 +140,26 @@ public class AutonomousBlue extends LinearOpMode {
 
             //go back to start position
             RobotUtils.setMotors(lf,lb,rf,rb,pwr,pwr,pwr,pwr);
-            sleep(f1);
+            sleep(f1-100);
+            lift = liftArr[0]; //this is required to make sure it knows it is at the right level
             RobotUtils.stopMotors(lf,lb,rf,rb);
-            sleep(2500);
-            RobotUtils.rotateT(robot, 90);
+            sleep(2000);
+            RobotUtils.rotateT(robot, 45);
             sleep(1500);
-            RobotUtils.setMotors(lf,lb,rf,rb,-pwr,-pwr,-pwr,-pwr);
             //go to duckies
-            sleep(1200);
+//            RobotUtils.setMotors(lf,lb,rf,rb,-pwr,-pwr,-pwr,-pwr);
+//            sleep(2500);
+//            RobotUtils.stopMotors(lf,lb,rf,rb);
+//            RobotUtils.rotateT(robot, 115);
+//            RobotUtils.setMotors(lf,lb,rf,rb,-pwr,-pwr,-pwr,-pwr);
+//            sleep(1000);
             RobotUtils.stopMotors(lf,lb,rf,rb);
-            RobotUtils.rotateT(robot, 20);
-            sleep(500);
-            RobotUtils.setMotors(lf,lb,rf,rb,-pwr,-pwr,-pwr,-pwr);
-            sleep(500);
-            RobotUtils.stopMotors(lf,lb,rf,rb);
+//            sleep(1000);
+            RobotUtils.moveLiftDown(lift, robot.basket, robot.winchMotor);
+            lift = LiftLevel.downLevel(lift); // to drop 3
+            liftArr[0] = lift;
+            sleep(2500);
             return;
-            //TODO: MAKE IT DROP TO A LOWER LEVEL WHEN DONE WITH AUTONOMOUS SO IT WORKS WITH MAINTELEOP
             /*
             //rotate 1pi radians
             RobotUtils.setMotors(lf,lb,rf,rb,pwr,pwr,-pwr,-pwr); //spin around 1pi radians

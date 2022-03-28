@@ -134,26 +134,22 @@ public class RobotUtils {
     synchronized static void rotateT(BotConfig robot, float targetAngle) {
         float absTarget;
 
-        absTarget = Math.round(robot.imu.getAngles()[0] + targetAngle);
+//        absTarget = Math.round(robot.imu.getAngles()[0] + targetAngle);
         if (targetAngle>0) {
-            targetAngle -= 10;
+            targetAngle -= 8;
             absTarget = Math.round(robot.imu.getAngles()[0] + targetAngle);
 
-            if (absTarget>360) {absTarget = 0+absTarget;}
+            if (absTarget>360) {absTarget -= 360;}
             while(Math.abs(Math.round(robot.imu.getAngles()[0])) < absTarget) {
                 robot.leftFront. setPower( 0.2);
                 robot.leftBack.  setPower( 0.2);
                 robot.rightFront.setPower(-0.2);
                 robot.rightBack. setPower(-0.2);
             }
-            robot.leftFront .setPower(0);
-            robot.leftBack  .setPower(0);
-            robot.rightFront.setPower(0);
-            robot.rightBack .setPower(0);
 
         }
         else {
-            targetAngle += 10;
+            targetAngle += 8;
             absTarget = Math.round(robot.imu.getAngles()[0] - targetAngle);
             if(absTarget<0) {absTarget = 360 - absTarget;}
             while(Math.abs(Math.round(robot.imu.getAngles()[0])) > absTarget) {
@@ -162,11 +158,11 @@ public class RobotUtils {
                 robot.rightFront.setPower( 0.2);
                 robot.rightBack. setPower( 0.2);
             }
-            robot.leftFront .setPower(0);
-            robot.leftBack  .setPower(0);
-            robot.rightFront.setPower(0);
-            robot.rightBack .setPower(0);
         }
+        robot.leftFront .setPower(0);
+        robot.leftBack  .setPower(0);
+        robot.rightFront.setPower(0);
+        robot.rightBack .setPower(0);
     }
 
     static void setMotors(DcMotor leftF, DcMotor leftB, DcMotor rightF, DcMotor rightB,
